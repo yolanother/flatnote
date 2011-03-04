@@ -21,12 +21,12 @@ import com.androsz.flatnote.R;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class CameraSample extends AnalyticActivity {
+public class CameraActivity extends HostActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera_sample);
+        setContentView(R.layout.activity_camera);
     }
 
 }
