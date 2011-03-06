@@ -8,5 +8,6 @@
 		<item name="android:textSize">24dip</item>
 		<item name="android:textStyle">bold</item>
 		<item name="android:drawableTop">@drawable/notebook</item>
+		<item name="android:layout_margin">20dip</item>
 	</style>
 </resources>

@@ -8,18 +8,26 @@
 	the specific language governing permissions and limitations under the License. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal" android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:splitMotionEvents="true" android:layout_gravity="center">
-	<Button android:layout_marginTop="50dip" android:text="Rotating Button"
-		android:layout_marginLeft="50dip" android:id="@+id/rotatingButton"
-		android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/NotebookButton"></Button>
-	<Button android:layout_marginTop="50dip" android:text="Rotating Button"
-		android:layout_marginLeft="50dip" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/rotatingButton2" style="@style/NotebookButton"></Button>
-	<Button android:layout_marginTop="50dip" android:text="Rotating Button"
-		android:layout_marginLeft="50dip" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/rotatingButton3" style="@style/NotebookButton"></Button>
-	<Button android:layout_marginTop="50dip" android:text="Rotating Button"
-		android:layout_marginLeft="50dip" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:id="@+id/rotatingButton4" style="@style/NotebookButton"></Button>
+	android:layout_height="match_parent" android:layout_gravity="center">
+	<com.androsz.flatnote.app.NotebooksScrollView
+		android:layout_width="match_parent" android:splitMotionEvents="true" android:layout_gravity="center"
+		android:id="@+id/notebooks_scroll" android:layout_height="match_parent">
+		<LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent" android:overScrollMode="ifContentScrolls" android:layerType="hardware">
+			<Button android:text="CMSC 403" android:id="@+id/rotatingButton"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				style="@style/NotebookButton"></Button>
+			<Button android:text="CMSC 401" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/rotatingButton2"
+				style="@style/NotebookButton"></Button>
+			<Button android:text="CMSC 312" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/rotatingButton3"
+				style="@style/NotebookButton"></Button>
+			<Button android:text="MATH 310" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/rotatingButton4"
+				style="@style/NotebookButton"></Button>
+			<Button android:text="CHEM 101 (lul)" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/rotatingButton5"
+				style="@style/NotebookButton"></Button>
+		</LinearLayout>
+	</com.androsz.flatnote.app.NotebooksScrollView>
 </LinearLayout>
