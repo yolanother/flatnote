@@ -22,10 +22,12 @@ package com.androsz.flatnote.app;
 import java.util.ArrayList;
 
 import com.androsz.flatnote.R;
+import com.androsz.flatnote.app.widget.NotebooksScrollView;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -53,57 +55,30 @@ public class NotebooksFragment extends Fragment {
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// go "up"
-		// one activity in the app's Activity heirarchy.
-		Activity activity = this.getActivity();
+
+		final Activity activity = this.getActivity();
 
 		final NotebooksScrollView container = (NotebooksScrollView) activity
 				.findViewById(R.id.notebooks_scroll);
 
-		ArrayList<Button> notebooks = new ArrayList<Button>();
+		final ArrayList<Button> notebooks = new ArrayList<Button>();
 
-		Button b1 = (Button) activity.findViewById(R.id.rotatingButton);
+		final Button b1 = (Button) activity.findViewById(R.id.rotatingButton);
+
 		notebooks.add(b1);
 		notebooks.add((Button) activity.findViewById(R.id.rotatingButton2));
 		notebooks.add((Button) activity.findViewById(R.id.rotatingButton3));
 		notebooks.add((Button) activity.findViewById(R.id.rotatingButton4));
 		notebooks.add((Button) activity.findViewById(R.id.rotatingButton5));
 		container.setNotebooks(notebooks);
-
-		if (savedInstanceState != null) {
-			container.post(new Runnable() {
-
-				@Override
-				public void run() {
-					container.smoothScrollTo(savedInstanceState.getInt("sX"),
-							savedInstanceState.getInt("sY"));
-				}
-			});
-		}
-		else
-		{
-			container.post(new Runnable() {
-
-				@Override
-				public void run() {
-					container.smoothScrollTo(1,0);
-				}
-			});
-		}
-	}
-	
-	public void onClick(View v)
-	{
 	}
 
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		
-		NotebooksScrollView container = (NotebooksScrollView) getActivity()
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		final Activity activity = this.getActivity();
+		final NotebooksScrollView container = (NotebooksScrollView) activity
 				.findViewById(R.id.notebooks_scroll);
-		outState.putInt("sX", container.getScrollX());
-		outState.putInt("sY", container.getScrollY());
-
+		container.refreshDimensions();
 	}
 
 	@Override

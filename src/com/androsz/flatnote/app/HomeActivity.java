@@ -16,25 +16,13 @@
 
 package com.androsz.flatnote.app;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.app.ActionBar;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.androsz.flatnote.R;
-import com.androsz.flatnote.handwriting.TouchPaint;
 
 public class HomeActivity extends HostActivity {
 
@@ -61,5 +49,5 @@ public class HomeActivity extends HostActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 }
