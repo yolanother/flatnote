@@ -13,7 +13,6 @@ public class NotebooksScrollView extends HorizontalScrollView {
 
 	GestureDetector mGestureDetector;
 	public ArrayList<Button> notebooks;
-	float centerX, width, height;
 	private static final float ROTATION_Y_MUFF = (float) -(Math.PI * Math.PI * 2);
 	private static final float TRANSLATION_MUFF = (float) (Math.PI * Math.PI);
 	private static final float ROTATION_X_MUFF = (float) (Math.PI * Math.PI * 10);
@@ -25,12 +24,16 @@ public class NotebooksScrollView extends HorizontalScrollView {
 
 	public void setNotebooks(final ArrayList<Button> notebooks) {
 		this.notebooks = notebooks;
-		refreshDimensions();
+		post(new Runnable() {
+
+			@Override
+			public void run() {
+				scrollTo(getMaxScrollAmount()/2 - (getMaxScrollAmount()/notebooks.size()),0);
+			}
+		});
 	}
 
 	public void refreshDimensions() {
-		
-		//updateNotebookRotations();
 		post(new Runnable() {
 
 			@Override
@@ -51,16 +54,17 @@ public class NotebooksScrollView extends HorizontalScrollView {
 	public void updateNotebookRotations() {
 		Rect outRect = new Rect();
 		this.getWindowVisibleDisplayFrame(outRect);
-		centerX = outRect.centerX();
-		width = outRect.width();
-		height = outRect.height();
-		float centerX = (getScrollX() + (this.centerX));
+		
+		float center = outRect.centerX();
+		float height = outRect.height();
+		float centerX = (getScrollX() + (center));
+		
 		for (Button notebook : notebooks) {
 			float offsetFromCenter = notebook.getX() + notebook.getPivotX()
 					- centerX;
 			float absOffsetFromCenter = Math.abs(offsetFromCenter);
 			float distanceAsScale = Math.min(1, 1 - absOffsetFromCenter
-					/ SCALE_MUFF / this.centerX);
+					/ SCALE_MUFF / center);
 
 			notebook.setScaleX(distanceAsScale);
 			notebook.setScaleY(distanceAsScale);
