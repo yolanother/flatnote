@@ -44,6 +44,8 @@ public class NotebookActivity extends HostActivity implements ActionBar.TabListe
 		Directory.initializeDirectory();
 
 		ActionBar bar = getActionBar();
+		bar.setDisplayHomeAsUpEnabled(true);
+		bar.setDisplayShowHomeEnabled(true);
 
 		/*int i;
 		for (i = 0; i < Directory.getCategoryCount(); i++)
@@ -56,8 +58,6 @@ public class NotebookActivity extends HostActivity implements ActionBar.TabListe
 		bar.setCustomView(mActionBarView);*/
 		//bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
 		//		| ActionBar.DISPLAY_USE_LOGO);
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		bar.setDisplayShowHomeEnabled(true);
 
 		// If category is not saved to the savedInstanceState,
 		// 0 is returned by default.

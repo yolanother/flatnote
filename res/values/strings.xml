@@ -12,4 +12,7 @@
 	<string name="add_image">Add Image</string>
 	<string name="take_picture">Take Picture</string>
 	<string name="delete_notebook">Delete Notebook</string>
+	<string name="pick_a_color">Pick a Color</string>
+	<string name="name">Name</string>
+	<string name="color">Color</string>
 </resources>

@@ -3,8 +3,7 @@
 	<!-- Base application theme is the default theme. -->
 	<style name="NotebookButton">
 		<item name="android:background">@android:color/transparent</item>
-		<item name="android:layout_gravity">center_vertical</item>
-		<item name="android:gravity">center_horizontal</item>
+		<item name="android:layout_gravity">center</item>
 		<item name="android:textSize">24dip</item>
 		<item name="android:textStyle">bold</item>
 		<item name="android:drawableTop">@drawable/notebook</item>

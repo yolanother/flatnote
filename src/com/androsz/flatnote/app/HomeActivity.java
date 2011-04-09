@@ -43,7 +43,8 @@ public class HomeActivity extends HostActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.new_notebook:
-			startActivity(new Intent(this, NotebookActivity.class));
+			NewNotebookDialog newNotebookDialog = new NewNotebookDialog();
+			newNotebookDialog.show(getFragmentManager(), "newNotebookDialog");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -1,7 +1,9 @@
 package com.androsz.flatnote.app;
 
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +18,15 @@ public class HostActivity extends AnalyticActivity {
 	{
 		super.onCreate(savedInstanceState);
 		this.setTheme(android.R.style.Theme_Holo);
+		
+	}
+	
+	@Override protected void onResume()
+	{
+		//ActionBar bar = getActionBar();
+		//bar.setDisplayHomeAsUpEnabled(true);
+		//bar.setDisplayShowHomeEnabled(true);
+		super.onResume();
 	}
 
     @Override
@@ -36,5 +47,4 @@ public class HostActivity extends AnalyticActivity {
             return super.onOptionsItemSelected(item);
         }
     }
-
 }

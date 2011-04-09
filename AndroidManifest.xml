@@ -22,7 +22,8 @@
 		android:hardwareAccelerated="true">
 
 		<!-- HomeActivity -->
-		<activity android:name=".app.HomeActivity" android:label="@string/app_name" android:configChanges="orientation">
+		<activity android:name=".app.HomeActivity" android:label="@string/app_name"
+			android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -30,17 +31,23 @@
 		</activity>
 
 		<!-- NoteActivity -->
-		<activity android:name=".app.NotebookActivity" android:label="Notebook"/>
+		<activity android:name=".app.NotebookActivity" android:label="Notebook" />
 
 		<!-- NoteActivity -->
-		<activity android:name=".app.NoteActivity" android:label="Note"/>
+		<activity android:name=".app.NoteActivity" android:label="Note" />
 
 		<!-- CameraSample -->
-		<activity android:name="app.CameraActivity" android:label="Take a snapshot"/>
+		<activity android:name="app.CameraActivity" android:label="Take a snapshot" />
 
 		<!-- TouchPaint -->
 		<activity android:name=".handwriting.TouchPaint"
 			android:label="Draw" />
+
+		<activity android:name=".app.NewNotebookDialog"
+			android:label="Create New Notebook" />
+			
+		<activity android:name=".app.ColorPickerDialog"
+			android:label="@string/pick_a_color" />
 
 		<activity android:name=".app.SettingsActivity" android:label="Settings" />
 	</application>

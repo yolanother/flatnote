@@ -32,8 +32,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.androsz.flatnote.app.ColorPickerDialog;
+import com.androsz.flatnote.app.widget.ColorPickerView.OnColorChangedListener;
+
 public class FingerPaint extends GraphicsActivity implements
-		ColorPickerDialog.OnColorChangedListener {
+		OnColorChangedListener {
 
 	public class MyView extends View {
 
@@ -133,7 +136,7 @@ public class FingerPaint extends GraphicsActivity implements
 	private static final int SRCATOP_MENU_ID = Menu.FIRST + 4;
 
 	@Override
-	public void colorChanged(int color) {
+	public void onColorChanged(int color) {
 		mPaint.setColor(color);
 	}
 

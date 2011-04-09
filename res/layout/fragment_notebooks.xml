@@ -7,20 +7,15 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal" android:layout_gravity="center" android:layout_height="wrap_content" android:layout_width="wrap_content">
+	android:orientation="horizontal" android:layout_gravity="center"
+	android:layout_height="match_parent" android:layout_width="match_parent">
 	<com.androsz.flatnote.app.widget.NotebooksScrollView
-		android:layout_width="match_parent" android:id="@+id/notebooks_scroll" android:layout_height="match_parent" android:overScrollMode="always" android:isScrollContainer="true">
-		<LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent">
-			<Button android:text="CMSC 403" android:id="@+id/rotatingButton"
-				style="@style/NotebookButton"></Button>
-			<Button android:text="CMSC 401" android:id="@+id/rotatingButton2"
-				style="@style/NotebookButton"></Button>
-			<Button android:text="CMSC 312"  android:id="@+id/rotatingButton3"
-				style="@style/NotebookButton"></Button>
-			<Button android:text="MATH 310" android:id="@+id/rotatingButton4"
-				style="@style/NotebookButton"></Button>
-			<Button android:text="CHEM 101 (lul)" android:id="@+id/rotatingButton5"
-				style="@style/NotebookButton"></Button>
+		android:id="@+id/notebooks_scroll" android:layout_height="match_parent"
+		android:overScrollMode="always" android:layout_width="match_parent">
+		<LinearLayout android:layout_height="match_parent"
+			android:layout_width="wrap_content">
+
+
 		</LinearLayout>
 	</com.androsz.flatnote.app.widget.NotebooksScrollView>
 </LinearLayout>
