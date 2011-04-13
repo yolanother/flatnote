@@ -20,29 +20,25 @@ public class ColorPickerView extends View {
 
 	private Paint mPaint;
 	private Paint mCenterPaint;
-	private final int[] mColors;
+	private int[] mColors;
 	private OnColorChangedListener mListener;
 
 	public ColorPickerView(Context c, AttributeSet as)
 	{
 		super(c, as);
-		mColors = new int[] { 0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF,
-				0xFF00FF00, 0xFFFFFF00, 0xFFFF0000 };
-		Shader s = new SweepGradient(0, 0, mColors, null);
-
-		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mPaint.setShader(s);
-		mPaint.setStyle(Paint.Style.STROKE);
-		mPaint.setStrokeWidth(32);
-
-		mCenterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		mCenterPaint.setColor(Color.CYAN);
-		mCenterPaint.setStrokeWidth(5);
+		init(Color.CYAN);
 	}
 	
 	public ColorPickerView(Context c, OnColorChangedListener l, int color) {
 		super(c);
 		mListener = l;
+		init(color);
+	}
+
+	public void init(int color) {
+		//layer type is software, renders all red in hardware mode
+		this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		
 		mColors = new int[] { 0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF,
 				0xFF00FF00, 0xFFFFFF00, 0xFFFF0000 };
 		Shader s = new SweepGradient(0, 0, mColors, null);
@@ -207,5 +203,15 @@ public class ColorPickerView extends View {
 			break;
 		}
 		return true;
+	}
+	
+	public void setOnColorChangedListener(OnColorChangedListener l)
+	{
+		this.mListener = l;
+	}
+	
+	public int getColor()
+	{
+		return mCenterPaint.getColor();
 	}
 }

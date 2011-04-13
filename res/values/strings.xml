@@ -15,4 +15,10 @@
 	<string name="pick_a_color">Pick a Color</string>
 	<string name="name">Name</string>
 	<string name="color">Color</string>
+	<string-array name="notebook_longclick_list">
+		<item>Open</item>
+		<item>Delete</item>
+		<item>Export</item>
+		<item>Change Name/Title</item>
+	</string-array>
 </resources>
