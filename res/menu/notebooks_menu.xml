@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/new_notebook" android:icon="@android:drawable/ic_menu_add"
+		android:showAsAction="ifRoom|withText" android:title="@string/new_notebook" />
+	<item android:id="@+id/search_notebooks" android:icon="@android:drawable/ic_menu_search"
+		android:showAsAction="ifRoom" android:title="@string/search_notebooks" />
+</menu>

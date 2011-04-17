@@ -45,7 +45,7 @@
 
 		<activity android:name=".app.NewNotebookDialog"
 			android:label="Create New Notebook" />
-			
+
 		<activity android:name=".app.ColorPickerDialog"
 			android:label="@string/pick_a_color" />
 

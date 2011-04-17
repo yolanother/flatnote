@@ -1,6 +1,7 @@
 package com.androsz.flatnote.app.widget;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +17,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.androsz.flatnote.Extras;
+import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
+import com.androsz.flatnote.app.NewNotebookDialog;
 import com.androsz.flatnote.app.NotebookActivity;
+import com.androsz.flatnote.db.NotebooksDB;
 import com.androsz.util.MathUtils;
 
 public class NotebookButton extends Button {
@@ -58,13 +63,22 @@ public class NotebookButton extends Button {
 			public boolean onLongClick(View v) {
 				new AlertDialog.Builder(NotebookButton.this.getContext())
 						.setSingleChoiceItems(R.array.notebook_longclick_list,
-								0, new DialogInterface.OnClickListener() {
+								-1, new DialogInterface.OnClickListener() {
 
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
+										switch (which) {
+										case 0:
+											open();
+										case 1:
+											delete();
+										case 2:
+
+										}
+										dialog.dismiss();
 									}
-								}).create();
+								}).show();
 				return true;
 			}
 		});
@@ -73,11 +87,27 @@ public class NotebookButton extends Button {
 
 			@Override
 			public void onClick(View v) {
-				Context c = NotebookButton.this.getContext();
-				Intent i = new Intent(c, NotebookActivity.class);
-				// i.putExtra("", value)
-				c.startActivity(i);
+				open();
 			}
 		});
+	}
+
+	public void open() {
+		Context c = getContext();
+		Intent i = new Intent(c, NotebookActivity.class);
+		CharSequence notebookName = getText();
+		if (notebookName == c.getText(R.string.tap_to_create_a_new_notebook)) {
+			c.sendBroadcast(new Intent(Intents.SHOW_NEW_NOTEBOOK_DIALOG));
+		} else {
+			i.putExtra(Extras.NOTEBOOK_NAME, notebookName);
+			c.startActivity(i);
+		}
+	}
+
+	public void delete() {
+		Context c = getContext();
+		NotebooksDB db = new NotebooksDB(c);
+		db.deleteNotebook(getText());
+		c.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
 	}
 }

@@ -5,10 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.androsz.flatnote.Extras;
+import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
 import com.androsz.flatnote.app.widget.ColorPickerView;
 import com.androsz.flatnote.app.widget.ColorPickerView.OnColorChangedListener;
@@ -45,7 +48,7 @@ public class NewNotebookDialog extends DialogFragment {
 		colorPicker = (ColorPickerView) contentView
 				.findViewById(R.id.notebook_color);
 		editName = (EditText) contentView.findViewById(R.id.notebook_name);
-		
+
 		colorPicker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
@@ -57,9 +60,21 @@ public class NewNotebookDialog extends DialogFragment {
 	}
 
 	private void onPositiveClick() {
+		Activity activity = getActivity();
+		
 		int color = colorPicker.getColor();
 		String name = editName.getText().toString();
-		new NotebooksDB(getActivity()).createNotebook(name, color);
+		
+		new NotebooksDB(activity).createNotebook(name, color);
+		activity.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
+
+		Intent i = new Intent(activity, NotebookActivity.class);
+		CharSequence notebookName = name;
+		i.putExtra(Extras.NOTEBOOK_NAME, notebookName);
+		activity.startActivity(i);
+
+		
 		dismiss();
+
 	}
 }

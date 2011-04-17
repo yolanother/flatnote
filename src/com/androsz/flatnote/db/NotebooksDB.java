@@ -26,8 +26,20 @@ public class NotebooksDB {
 		cv.put(Helper.KEY_COLOR, color);
 
 		long id = db.insert(Helper.TABLE_NOTEBOOKS, null, cv);
+		
 		db.close();
+		
 		return id;
+	}
+
+	public int deleteNotebook(CharSequence charSequence) {
+		SQLiteDatabase db = helper.getWritableDatabase();
+
+		int numRowsDeleted = db.delete(Helper.TABLE_NOTEBOOKS, Helper.KEY_NAME + "='" + charSequence+"'", null);
+
+		db.close();
+		
+		return numRowsDeleted;
 	}
 
 	public ArrayList<NotebookButton> getAllNotebooks(Context context) {

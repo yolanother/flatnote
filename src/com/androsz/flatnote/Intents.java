@@ -1,30 +1,10 @@
 package com.androsz.flatnote;
 
-/*
- * Adapted from http://stackoverflow.com/questions/604424/java-enum-converting-string-to-enum/2965252#2965252
- */
-public enum Intents {
-	Notebook(Intents.class+"bleh");
-	
+public class Intents {
+	private static final String PACKAGE = Intents.class.getPackage().getName()
+			+ ".";
 
-	private String text;
+	public static final String REFRESH_NOTEBOOKS = PACKAGE + "REFRESH_NOTEBOOKS";
+	public static final String SHOW_NEW_NOTEBOOK_DIALOG = PACKAGE + "SHOW_NEW_NOTEBOOK_DIALOG";
 
-	Intents(String text) {
-		this.text = text;
-	}
-
-	public String getText() {
-		return this.text;
-	}
-
-	public static Intents fromString(String text) {
-		if (text != null) {
-			for (Intents b : Intents.values()) {
-				if (text.equalsIgnoreCase(b.text)) {
-					return b;
-				}
-			}
-		}
-		return null;
-	}
 }

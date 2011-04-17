@@ -3,6 +3,7 @@ package com.androsz.flatnote.app.widget;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.androsz.flatnote.R;
 import com.androsz.util.MathUtils;
 
 import android.content.Context;
@@ -33,10 +34,12 @@ public class NotebooksScrollView extends HorizontalScrollView {
 
 	public void setNotebooks(final ArrayList<NotebookButton> notebooks) {
 		final LinearLayout notebooksContainer = (LinearLayout) getChildAt(0);
+		notebooksContainer.removeAllViews();
 		
 		//add a dummy notebook that prompts the user to create a notebook
 		if (notebooks == null) {
-			notebooksContainer.addView(new NotebookButton(getContext(), "Tap to create a new notebook", Color.argb(100, 127, 127, 127)));
+			Context c =  getContext();
+			notebooksContainer.addView(new NotebookButton(c, c.getText(R.string.tap_to_create_a_new_notebook), Color.argb(127, 127, 127, 127)));
 		} else {
 
 			for (NotebookButton notebook : notebooks) {

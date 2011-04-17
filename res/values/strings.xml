@@ -6,6 +6,7 @@
 	<string name="switch_camera">Switch Camera</string>
 	<string name="camera">Camera</string>
 	<string name="save">Save</string>
+	<string name="search_notebooks">Search Notebooks</string>
 	<string name="add_drawing">Add Drawing</string>
 	<string name="new_notebook">New Notebook</string>
 	<string name="new_note">New Note</string>
@@ -18,7 +19,7 @@
 	<string-array name="notebook_longclick_list">
 		<item>Open</item>
 		<item>Delete</item>
-		<item>Export</item>
-		<item>Change Name/Title</item>
+		<item>Edit Name/Color</item>
 	</string-array>
+	<string name="tap_to_create_a_new_notebook">Tap to create a new notebook</string>
 </resources>
