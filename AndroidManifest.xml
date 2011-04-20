@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.androsz.flatnote" android:versionCode="1"
-	android:sharedUserId="com.androsz.flatnote" android:versionName="0.1">
+	package="com.androsz.flatnote" android:versionCode="0"
+	android:sharedUserId="com.androsz.flatnote" android:versionName="Acura">
 
 	<uses-sdk android:minSdkVersion="11" android:targetSdkVersion="11" />
 
@@ -12,17 +12,17 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.BILLING" />
+	<uses-permission android:name="android.permission.CAMERA" />
 
 	<supports-screens android:smallScreens="false"
 		android:normalScreens="false" android:largeScreens="false"
 		android:xlargeScreens="true" />
-	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:hardwareAccelerated="true">
 
-		<!-- HomeActivity -->
-		<activity android:name=".app.HomeActivity" android:label="@string/app_name"
+		<!-- NotebooksActivity -->
+		<activity android:name=".app.NotebooksActivity" android:label="@string/app_name"
 			android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -43,12 +43,15 @@
 		<activity android:name=".handwriting.TouchPaint"
 			android:label="Draw" />
 
+		<!-- NewNotebookDialog  -->
 		<activity android:name=".app.NewNotebookDialog"
 			android:label="Create New Notebook" />
-
+			
+		<!-- ColorPickerDialog  -->
 		<activity android:name=".app.ColorPickerDialog"
 			android:label="@string/pick_a_color" />
 
+		<!-- SettingsActivity -->
 		<activity android:name=".app.SettingsActivity" android:label="Settings" />
 	</application>
 </manifest>

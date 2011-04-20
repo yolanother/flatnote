@@ -16,10 +16,8 @@
 	<string name="pick_a_color">Pick a Color</string>
 	<string name="name">Name</string>
 	<string name="color">Color</string>
-	<string-array name="notebook_longclick_list">
-		<item>Open</item>
-		<item>Delete</item>
-		<item>Edit Name/Color</item>
-	</string-array>
+	<string name="open">Open</string>
+	<string name="delete">Delete</string>
+	<string name="edit_name_and_color">Edit Name and Color</string>
 	<string name="tap_to_create_a_new_notebook">Tap to create a new notebook</string>
 </resources>

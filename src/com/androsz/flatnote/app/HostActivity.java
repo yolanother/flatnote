@@ -17,19 +17,30 @@ public class HostActivity extends AnalyticActivity {
 
 	}
 
+	boolean alreadyPrepared = false;
+
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		final MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.host_menu, menu);
-		return true;
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!alreadyPrepared) {
+			final MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.host_menu, menu);
+			alreadyPrepared = true;
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
+
+	/*
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) { final
+	 * MenuInflater inflater = getMenuInflater();
+	 * inflater.inflate(R.menu.host_menu, menu); return
+	 * super.onCreateOptionsMenu(menu); }
+	 */
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
-			final Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

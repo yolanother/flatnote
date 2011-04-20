@@ -6,6 +6,7 @@ import java.util.Random;
 import com.androsz.flatnote.R;
 import com.androsz.util.MathUtils;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -32,7 +33,7 @@ public class NotebooksScrollView extends HorizontalScrollView {
 		super(context, as);
 	}
 
-	public void setNotebooks(final ArrayList<NotebookButton> notebooks) {
+	public void setNotebooks(Fragment owner, final ArrayList<NotebookButton> notebooks) {
 		final LinearLayout notebooksContainer = (LinearLayout) getChildAt(0);
 		notebooksContainer.removeAllViews();
 		
@@ -44,6 +45,7 @@ public class NotebooksScrollView extends HorizontalScrollView {
 
 			for (NotebookButton notebook : notebooks) {
 				notebooksContainer.addView(notebook);
+				owner.registerForContextMenu(notebook);
 			}
 		}
 

@@ -14,4 +14,5 @@ public class HomeActivity extends HostActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 	}
+	
 }

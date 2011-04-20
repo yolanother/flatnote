@@ -7,18 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
 import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
+import com.androsz.flatnote.app.widget.NotebookButton;
 import com.androsz.flatnote.app.widget.NotebooksScrollView;
 import com.androsz.flatnote.db.NotebooksDB;
 
@@ -53,10 +58,48 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 		final NotebooksScrollView container = (NotebooksScrollView) activity
 				.findViewById(R.id.notebooks_scroll);
 
-		container.setNotebooks(new NotebooksDB(activity)
-				.getAllNotebooks(activity));
+		container.setNotebooks(this,
+				new NotebooksDB(activity).getAllNotebooks(activity));
 
 		return container;
+	}
+
+	NotebookButton contextMenuNotebook;
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		contextMenuNotebook = (NotebookButton) v;
+		menu.add(Menu.NONE, 1, Menu.NONE,
+				R.string.open);
+		menu.add(Menu.NONE, 2, Menu.NONE,
+				R.string.delete);
+		menu.add(Menu.NONE, 3, Menu.NONE,
+				R.string.edit_name_and_color);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		
+		if(contextMenuNotebook != null)
+		{
+			switch (item.getItemId()) {
+			case 1:
+				contextMenuNotebook.open();
+				contextMenuNotebook = null;
+				return true;
+			case 2:
+				contextMenuNotebook.delete();
+				contextMenuNotebook = null;
+				return true;
+			case 3:
+				contextMenuNotebook.edit();
+				contextMenuNotebook = null;
+				return true;
+			}
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -65,6 +108,7 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 		SearchView sv = new SearchView(getActivity());
 		sv.setOnQueryTextListener(this);
 		menu.findItem(R.id.search_notebooks).setActionView(sv);
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

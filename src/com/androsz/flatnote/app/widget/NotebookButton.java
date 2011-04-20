@@ -2,6 +2,7 @@ package com.androsz.flatnote.app.widget;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,10 +11,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.TextUtils.TruncateAt;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -34,8 +42,8 @@ public class NotebookButton extends Button {
 		// unfortunately, this was the best solution I could find!
 		setBackgroundResource(android.R.color.transparent);
 
-		setTextSize(MathUtils.calculatePxFromDip(context, 24));
-		setTextAppearance(context, R.style.NotebookButton);
+		setTextAppearance(context, R.style.NotebookButtonText);
+		//for some reason these don't get set by the style...
 		setSingleLine(true);
 		setEllipsize(TruncateAt.END);
 
@@ -56,32 +64,14 @@ public class NotebookButton extends Button {
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		lp.gravity = Gravity.CENTER;
 		setLayoutParams(lp);
-
-		setOnLongClickListener(new OnLongClickListener() {
+		this.setOnCreateContextMenuListener(new OnCreateContextMenuListener(){
 
 			@Override
-			public boolean onLongClick(View v) {
-				new AlertDialog.Builder(NotebookButton.this.getContext())
-						.setSingleChoiceItems(R.array.notebook_longclick_list,
-								-1, new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										switch (which) {
-										case 0:
-											open();
-										case 1:
-											delete();
-										case 2:
-
-										}
-										dialog.dismiss();
-									}
-								}).show();
-				return true;
-			}
-		});
+			public void onCreateContextMenu(ContextMenu menu, View v,
+					ContextMenuInfo menuInfo) {
+				// TODO Auto-generated method stub
+				
+			}});
 
 		setOnClickListener(new OnClickListener() {
 
@@ -109,5 +99,10 @@ public class NotebookButton extends Button {
 		NotebooksDB db = new NotebooksDB(c);
 		db.deleteNotebook(getText());
 		c.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
+	}
+	
+	public void edit()
+	{
+		// TODO: implement
 	}
 }

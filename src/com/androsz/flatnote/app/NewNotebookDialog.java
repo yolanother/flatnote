@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.androsz.flatnote.Extras;
@@ -19,15 +24,12 @@ import com.androsz.flatnote.db.NotebooksDB;
 
 public class NewNotebookDialog extends DialogFragment {
 
-	ColorPickerView colorPicker;
-	EditText editName;
-
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Activity activity = getActivity();
 
-		View contentView = View.inflate(activity, R.layout.dialog_new_notebook,
-				null);
+		final View contentView = View.inflate(activity,
+				R.layout.dialog_new_notebook, null);
 
 		Dialog d = new AlertDialog.Builder(activity)
 				.setView(contentView)
@@ -35,7 +37,7 @@ public class NewNotebookDialog extends DialogFragment {
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								onPositiveClick();
+								onPositiveClick(contentView);
 							}
 						})
 				.setNegativeButton(android.R.string.cancel,
@@ -45,26 +47,30 @@ public class NewNotebookDialog extends DialogFragment {
 							}
 						}).create();
 
-		colorPicker = (ColorPickerView) contentView
+		ColorPickerView colorPicker = (ColorPickerView) contentView
 				.findViewById(R.id.notebook_color);
-		editName = (EditText) contentView.findViewById(R.id.notebook_name);
 
 		colorPicker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				onPositiveClick();
+				onPositiveClick(contentView);
 			}
 		});
 
 		return d;
 	}
 
-	private void onPositiveClick() {
+	private void onPositiveClick(View contentView) {
 		Activity activity = getActivity();
-		
+		ColorPickerView colorPicker = (ColorPickerView) contentView
+				.findViewById(R.id.notebook_color);
+
+		EditText editName = (EditText) contentView
+				.findViewById(R.id.notebook_name);
+
 		int color = colorPicker.getColor();
 		String name = editName.getText().toString();
-		
+
 		new NotebooksDB(activity).createNotebook(name, color);
 		activity.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
 
@@ -73,7 +79,6 @@ public class NewNotebookDialog extends DialogFragment {
 		i.putExtra(Extras.NOTEBOOK_NAME, notebookName);
 		activity.startActivity(i);
 
-		
 		dismiss();
 
 	}
