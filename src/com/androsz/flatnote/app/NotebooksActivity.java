@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 import com.androsz.flatnote.R;
 
-public class HomeActivity extends HostActivity {
+public class NotebooksActivity extends HostActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
