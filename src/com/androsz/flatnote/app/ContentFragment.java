@@ -108,10 +108,27 @@ public class ContentFragment extends Fragment {
                     } catch (NumberFormatException exception) {
                         return false;
                     }
-                    imageView.setImageBitmap(
-                        Directory.getCategory(category)
-                                 .getEntry(entryId)
-                                 .getBitmap(getResources()));
+                    int drawableId = 0;
+        			switch (entryId) {
+        			case 0:
+        				drawableId = R.drawable.red_balloon;
+        				break;
+
+        			case 1:
+        				drawableId = R.drawable.green_balloon;
+        				break;
+
+        			case 2:
+        				drawableId = R.drawable.blue_balloon;
+        				break;
+
+        			}
+        			imageView.setImageDrawable(getResources().getDrawable(drawableId));
+                    
+                    //imageView.setImageBitmap(
+                     //   Directory.getCategory(category)
+                     //            .getEntry(entryId)
+                     //            .getBitmap(getResources()));
                     return true;
                 }
             }

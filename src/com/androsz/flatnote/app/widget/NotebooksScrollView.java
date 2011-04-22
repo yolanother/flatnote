@@ -33,21 +33,25 @@ public class NotebooksScrollView extends HorizontalScrollView {
 		super(context, as);
 	}
 
-	public void setNotebooks(Fragment owner, final ArrayList<NotebookButton> notebooks) {
+	public void setNotebooks(Fragment owner,
+			final ArrayList<NotebookButton> notebooks) {
 		final LinearLayout notebooksContainer = (LinearLayout) getChildAt(0);
 		notebooksContainer.removeAllViews();
+
 		
-		//add a dummy notebook that prompts the user to create a notebook
-		if (notebooks == null) {
-			Context c =  getContext();
-			notebooksContainer.addView(new NotebookButton(c, c.getText(R.string.tap_to_create_a_new_notebook), Color.argb(127, 127, 127, 127)));
-		} else {
+		if (notebooks != null) {
 
 			for (NotebookButton notebook : notebooks) {
 				notebooksContainer.addView(notebook);
 				owner.registerForContextMenu(notebook);
 			}
 		}
+		
+		// add a dummy notebook that prompts the user to create a notebook
+		Context c = getContext();
+		notebooksContainer.addView(new NotebookButton(c, c
+				.getText(R.string.tap_to_create_a_new_notebook), Color.argb(
+				127, 127, 127, 127)));
 
 		Rect outRect = new Rect();
 		this.getWindowVisibleDisplayFrame(outRect);

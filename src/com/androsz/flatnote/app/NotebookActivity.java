@@ -34,14 +34,12 @@ public class NotebookActivity extends HostActivity implements ActionBar.TabListe
 		}
 	}
 
-	private View mActionBarView;
+	//private View mActionBarView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		Directory.initializeDirectory();
 
 		ActionBar bar = getActionBar();
 		bar.setDisplayHomeAsUpEnabled(true);

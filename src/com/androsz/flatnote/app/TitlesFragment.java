@@ -35,90 +35,111 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 public class TitlesFragment extends ListFragment {
-    private int mCategory = 0;
-    private int mCurPosition = 0;
+	private int mCategory = 0;
+	private int mCurPosition = 0;
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 
-        //Current position should survive screen rotations.
-        if (savedInstanceState != null) {
-            mCategory = savedInstanceState.getInt("category");
-            mCurPosition = savedInstanceState.getInt("listPosition");
-        }
+		// Current position should survive screen rotations.
+		if (savedInstanceState != null) {
+			mCategory = savedInstanceState.getInt("category");
+			mCurPosition = savedInstanceState.getInt("listPosition");
+		}
 
-        populateTitles(mCategory);
-        ListView lv = getListView();
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        selectPosition(mCurPosition);
-        lv.setCacheColorHint(Color.WHITE);
+		populateTitles(mCategory);
+		ListView lv = getListView();
+		lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		selectPosition(mCurPosition);
+		lv.setCacheColorHint(Color.WHITE);
 
-        lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-            @Override
-            public boolean onItemLongClick(AdapterView<?> av, View v, int pos,
-                    long id) {
-                final String title = (String) ((TextView) v).getText();
+			@Override
+			public boolean onItemLongClick(AdapterView<?> av, View v, int pos,
+					long id) {
+				final String title = (String) ((TextView) v).getText();
 
-                // Set up clip data with the category||entry_id format.
-                final String textData = String.format("%d||%d", mCategory, pos);
-                ClipData data = ClipData.newPlainText(title, textData);
-                v.startDrag(data, new MyDragShadowBuilder(v), null, 0);
-                return true;
-            }
-        });
-    }
+				// Set up clip data with the category||entry_id format.
+				final String textData = String.format("%d||%d", mCategory, pos);
+				ClipData data = ClipData.newPlainText(title, textData);
+				v.startDrag(data, new MyDragShadowBuilder(v), null, 0);
+				return true;
+			}
+		});
+	}
 
-    private static class MyDragShadowBuilder extends View.DragShadowBuilder {
-        private static Drawable shadow;
+	private static class MyDragShadowBuilder extends View.DragShadowBuilder {
+		private static Drawable shadow;
 
-        public MyDragShadowBuilder(View v) {
-            super(v);
-            shadow = new ColorDrawable(Color.BLUE);
-            shadow.setBounds(0, 0, v.getWidth(), v.getHeight());
-        }
+		public MyDragShadowBuilder(View v) {
+			super(v);
+			shadow = new ColorDrawable(Color.BLUE);
+			shadow.setBounds(0, 0, v.getWidth(), v.getHeight());
+		}
 
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            shadow.draw(canvas);
-        }
-    }
+		@Override
+		public void onDrawShadow(Canvas canvas) {
+			shadow.draw(canvas);
+		}
+	}
 
-    public void populateTitles(int category) {
-        DirectoryCategory cat = Directory.getCategory(category);
-        String[] items = new String[cat.getEntryCount()];
-        for (int i = 0; i < cat.getEntryCount(); i++)
-            items[i] = cat.getEntry(i).getName();
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-                R.layout.title_list_item, items));
-        mCategory = category;
-    }
+	private static String[] DEMO = new String[] { "Red", "Green", "Blue" };
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        updateImage(position);
-    }
+	public void populateTitles(int category) {
+		// DirectoryCategory cat = Directory.getCategory(category);
+		// String[] items = new String[cat.getEntryCount()];
+		// for (int i = 0; i < cat.getEntryCount(); i++)
+		// items[i] = cat.getEntry(i).getName();
+		setListAdapter(new ArrayAdapter<String>(getActivity(),
+				R.layout.title_list_item, DEMO));
+		mCategory = category;
+	}
 
-    private void updateImage(int position) {
-        ImageView iv = (ImageView) getFragmentManager().findFragmentById(
-                R.id.frag_content).getView().findViewById(R.id.image);
-        iv.setImageDrawable(Directory.getCategory(mCategory).getEntry(position)
-                .getDrawable(getResources()));
-        mCurPosition = position;
-    }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		updateImage(position);
+	}
 
-    public void selectPosition(int position) {
-        ListView lv = getListView();
-        lv.setItemChecked(position, true);
-        updateImage(position);
+	private void updateImage(int position) {
+		ImageView iv = (ImageView) getFragmentManager()
+				.findFragmentById(R.id.frag_content).getView()
+				.findViewById(R.id.image);
+		if (iv != null) {
+			// iv.setImageDrawable(Directory.getCategory(mCategory).getEntry(position)
+			// .getDrawable(getResources()));
+			int drawableId = 0;
+			switch (position) {
+			case 0:
+				drawableId = R.drawable.red_balloon;
+				break;
 
-    }
+			case 1:
+				drawableId = R.drawable.green_balloon;
+				break;
 
-    @Override
-    public void onSaveInstanceState (Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("listPosition", mCurPosition);
-        outState.putInt("category", mCategory);
-    }
+			case 2:
+				drawableId = R.drawable.blue_balloon;
+				break;
+
+			}
+			iv.setImageDrawable(getResources().getDrawable(drawableId));
+		}
+		mCurPosition = position;
+	}
+
+	public void selectPosition(int position) {
+		ListView lv = getListView();
+		lv.setItemChecked(position, true);
+		updateImage(position);
+
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt("listPosition", mCurPosition);
+		outState.putInt("category", mCategory);
+	}
 }

@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnTouchListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.androsz.flatnote.Extras;
@@ -58,6 +53,20 @@ public class NewNotebookDialog extends DialogFragment {
 		});
 
 		return d;
+	}
+	
+	@Override public void onCancel(DialogInterface dialog)
+	{
+		super.onCancel(dialog);
+		Activity activity = getActivity();
+		final View contentView = View.inflate(activity,
+				R.layout.dialog_new_notebook, null);
+		onPositiveClick(contentView);
+	}
+	
+	@Override public void onDismiss(DialogInterface dialog)
+	{
+		super.onDismiss(dialog);
 	}
 
 	private void onPositiveClick(View contentView) {

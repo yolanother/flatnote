@@ -20,4 +20,7 @@
 	<string name="delete">Delete</string>
 	<string name="edit_name_and_color">Edit Name and Color</string>
 	<string name="tap_to_create_a_new_notebook">Tap to create a new notebook</string>
+	<string name="notebook">Notebook</string>
+	<string name="note">Note</string>
+	<string name="create_a_new_notebook">Create a New Notebook</string>
 </resources>
