@@ -16,60 +16,25 @@
 
 package com.androsz.flatnote.app;
 
-import com.androsz.flatnote.R;
-
 import android.app.ListFragment;
 import android.content.ClipData;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemLongClickListener;
+
+import com.androsz.flatnote.R;
 
 public class TitlesFragment extends ListFragment {
-	private int mCategory = 0;
-	private int mCurPosition = 0;
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		// Current position should survive screen rotations.
-		if (savedInstanceState != null) {
-			mCategory = savedInstanceState.getInt("category");
-			mCurPosition = savedInstanceState.getInt("listPosition");
-		}
-
-		populateTitles(mCategory);
-		ListView lv = getListView();
-		lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		selectPosition(mCurPosition);
-		lv.setCacheColorHint(Color.WHITE);
-
-		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> av, View v, int pos,
-					long id) {
-				final String title = (String) ((TextView) v).getText();
-
-				// Set up clip data with the category||entry_id format.
-				final String textData = String.format("%d||%d", mCategory, pos);
-				ClipData data = ClipData.newPlainText(title, textData);
-				v.startDrag(data, new MyDragShadowBuilder(v), null, 0);
-				return true;
-			}
-		});
-	}
-
 	private static class MyDragShadowBuilder extends View.DragShadowBuilder {
 		private static Drawable shadow;
 
@@ -85,7 +50,55 @@ public class TitlesFragment extends ListFragment {
 		}
 	}
 
+	private int mCategory = 0;
+
+	private int mCurPosition = 0;
+
 	private static String[] DEMO = new String[] { "Red", "Green", "Blue" };
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		// Current position should survive screen rotations.
+		if (savedInstanceState != null) {
+			mCategory = savedInstanceState.getInt("category");
+			mCurPosition = savedInstanceState.getInt("listPosition");
+		}
+
+		populateTitles(mCategory);
+		final ListView lv = getListView();
+		lv.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+		selectPosition(mCurPosition);
+		lv.setCacheColorHint(Color.WHITE);
+
+		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> av, View v, int pos,
+					long id) {
+				final String title = (String) ((TextView) v).getText();
+
+				// Set up clip data with the category||entry_id format.
+				final String textData = String.format("%d||%d", mCategory, pos);
+				final ClipData data = ClipData.newPlainText(title, textData);
+				v.startDrag(data, new MyDragShadowBuilder(v), null, 0);
+				return true;
+			}
+		});
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		updateImage(position);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt("listPosition", mCurPosition);
+		outState.putInt("category", mCategory);
+	}
 
 	public void populateTitles(int category) {
 		// DirectoryCategory cat = Directory.getCategory(category);
@@ -97,13 +110,15 @@ public class TitlesFragment extends ListFragment {
 		mCategory = category;
 	}
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
+	public void selectPosition(int position) {
+		final ListView lv = getListView();
+		lv.setItemChecked(position, true);
 		updateImage(position);
+
 	}
 
 	private void updateImage(int position) {
-		ImageView iv = (ImageView) getFragmentManager()
+		final ImageView iv = (ImageView) getFragmentManager()
 				.findFragmentById(R.id.frag_content).getView()
 				.findViewById(R.id.image);
 		if (iv != null) {
@@ -127,19 +142,5 @@ public class TitlesFragment extends ListFragment {
 			iv.setImageDrawable(getResources().getDrawable(drawableId));
 		}
 		mCurPosition = position;
-	}
-
-	public void selectPosition(int position) {
-		ListView lv = getListView();
-		lv.setItemChecked(position, true);
-		updateImage(position);
-
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt("listPosition", mCurPosition);
-		outState.putInt("category", mCategory);
 	}
 }

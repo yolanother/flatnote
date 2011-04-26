@@ -22,7 +22,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,132 +38,6 @@ import android.view.View;
  * simple painting app.
  */
 public class TouchPaint extends GraphicsActivity {
-	/** Used as a pulse to gradually fade the contents of the window. */
-	private static final int FADE_MSG = 1;
-
-	/** Menu ID for the command to clear the window. */
-	private static final int CLEAR_ID = Menu.FIRST;
-	/** Menu ID for the command to toggle fading. */
-	private static final int FADE_ID = Menu.FIRST + 1;
-
-	/** How often to fade the contents of the window (in ms). */
-	private static final int FADE_DELAY = 100;
-
-	/** The view responsible for drawing the window. */
-	MyView mView;
-	/** Is fading mode enabled? */
-	boolean mFading;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		// Create and attach the view that is responsible for painting.
-		mView = new MyView(this);
-		setContentView(mView);
-		mView.requestFocus();
-
-		// Restore the fading option if we are being thawed from a
-		// previously saved state. Note that we are not currently remembering
-		// the contents of the bitmap.
-		mFading = savedInstanceState != null ? savedInstanceState.getBoolean(
-				"fading", true) : true;
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, CLEAR_ID, 0, "Clear");
-		menu.add(0, FADE_ID, 0, "Fade").setCheckable(true);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(FADE_ID).setChecked(mFading);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case CLEAR_ID:
-			mView.clear();
-			return true;
-		case FADE_ID:
-			mFading = !mFading;
-			if (mFading) {
-				startFading();
-			} else {
-				stopFading();
-			}
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		// If fading mode is enabled, then as long as we are resumed we want
-		// to run pulse to fade the contents.
-		if (mFading) {
-			startFading();
-		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		// Save away the fading state to restore if needed later. Note that
-		// we do not currently save the contents of the display.
-		outState.putBoolean("fading", mFading);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		// Make sure to never run the fading pulse while we are paused or
-		// stopped.
-		stopFading();
-	}
-
-	/**
-	 * Start up the pulse to fade the screen, clearing any existing pulse to
-	 * ensure that we don't have multiple pulses running at a time.
-	 */
-	void startFading() {
-		mHandler.removeMessages(FADE_MSG);
-		mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_MSG),
-				FADE_DELAY);
-	}
-
-	/**
-	 * Stop the pulse to fade the screen.
-	 */
-	void stopFading() {
-		mHandler.removeMessages(FADE_MSG);
-	}
-
-	private Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			// Upon receiving the fade pulse, we have the view perform a
-			// fade and then enqueue a new message to pulse at the desired
-			// next time.
-			case FADE_MSG: {
-				mView.fade();
-				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_MSG),
-						FADE_DELAY);
-				break;
-			}
-			default:
-				super.handleMessage(msg);
-			}
-		}
-	};
-
 	public class MyView extends View {
 		private static final int FADE_ALPHA = 0x06;
 		private static final int MAX_FADE_STEPS = 256 / FADE_ALPHA + 4;
@@ -181,6 +54,10 @@ public class TouchPaint extends GraphicsActivity {
 		private float mLastX;
 		private float mLastY;
 		private int mFadeSteps = MAX_FADE_STEPS;
+
+		private static final float TOUCH_TOLERANCE = 1f;
+
+		private boolean didntMove = true;
 
 		public MyView(Context c) {
 			super(c);
@@ -218,21 +95,31 @@ public class TouchPaint extends GraphicsActivity {
 		}
 
 		@Override
+		protected void onDraw(Canvas canvas) {
+			if (mBitmap != null) {
+				canvas.drawBitmap(mBitmap, 0, 0, null);
+			}
+
+			mCanvas.drawPath(mPath, mPaint);
+		}
+
+		@Override
 		protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 			int curW = mBitmap != null ? mBitmap.getWidth() : 0;
 			int curH = mBitmap != null ? mBitmap.getHeight() : 0;
-			if (curW >= w && curH >= h) {
+			if (curW >= w && curH >= h)
 				return;
+
+			if (curW < w) {
+				curW = w;
+			}
+			if (curH < h) {
+				curH = h;
 			}
 
-			if (curW < w)
-				curW = w;
-			if (curH < h)
-				curH = h;
-
-			Bitmap newBitmap = Bitmap.createBitmap(curW, curH,
+			final Bitmap newBitmap = Bitmap.createBitmap(curW, curH,
 					Bitmap.Config.RGB_565);
-			Canvas newCanvas = new Canvas();
+			final Canvas newCanvas = new Canvas();
 			newCanvas.setBitmap(newBitmap);
 			if (mBitmap != null) {
 				newCanvas.drawBitmap(mBitmap, 0, 0, null);
@@ -243,17 +130,8 @@ public class TouchPaint extends GraphicsActivity {
 		}
 
 		@Override
-		protected void onDraw(Canvas canvas) {
-			if (mBitmap != null) {
-				canvas.drawBitmap(mBitmap, 0, 0, null);
-			}
-
-			mCanvas.drawPath(mPath, mPaint);
-		}
-
-		@Override
 		public boolean onTouchEvent(MotionEvent event) {
-			int action = event.getActionMasked();
+			final int action = event.getActionMasked();
 			final float x = event.getX();
 			final float y = event.getY();
 			final float pres = event.getPressure();
@@ -263,7 +141,7 @@ public class TouchPaint extends GraphicsActivity {
 				invalidate();
 				break;
 			case MotionEvent.ACTION_MOVE:
-				mPaint.setStrokeWidth((float) (pres * Math.E*Math.E));
+				mPaint.setStrokeWidth((float) (pres * Math.E * Math.E));
 				touch_move(x, y);
 				invalidate();
 				break;
@@ -275,8 +153,6 @@ public class TouchPaint extends GraphicsActivity {
 			return true;
 		}
 
-		private static final float TOUCH_TOLERANCE = 1f;
-		private boolean didntMove = true;
 		private void touch_move(float x, float y) {
 			final float dx = Math.abs(x - mCurX);
 			final float dy = Math.abs(y - mCurY);
@@ -296,9 +172,8 @@ public class TouchPaint extends GraphicsActivity {
 		}
 
 		private void touch_up() {
-			if(didntMove)
-			{
-				mPath.quadTo(mCurX-1, mCurY-1, mCurX+1, mCurY+1);
+			if (didntMove) {
+				mPath.quadTo(mCurX - 1, mCurY - 1, mCurX + 1, mCurY + 1);
 			}
 			didntMove = true;
 			mPath.lineTo(mCurX, mCurY);
@@ -307,5 +182,131 @@ public class TouchPaint extends GraphicsActivity {
 			// kill this so we don't double draw
 			mPath.reset();
 		}
+	}
+
+	/** Used as a pulse to gradually fade the contents of the window. */
+	private static final int FADE_MSG = 1;
+	/** Menu ID for the command to clear the window. */
+	private static final int CLEAR_ID = Menu.FIRST;
+
+	/** Menu ID for the command to toggle fading. */
+	private static final int FADE_ID = Menu.FIRST + 1;
+
+	/** How often to fade the contents of the window (in ms). */
+	private static final int FADE_DELAY = 100;
+	/** The view responsible for drawing the window. */
+	MyView mView;
+
+	/** Is fading mode enabled? */
+	boolean mFading;
+
+	private final Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			// Upon receiving the fade pulse, we have the view perform a
+			// fade and then enqueue a new message to pulse at the desired
+			// next time.
+			case FADE_MSG: {
+				mView.fade();
+				mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_MSG),
+						FADE_DELAY);
+				break;
+			}
+			default:
+				super.handleMessage(msg);
+			}
+		}
+	};
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Create and attach the view that is responsible for painting.
+		mView = new MyView(this);
+		setContentView(mView);
+		mView.requestFocus();
+
+		// Restore the fading option if we are being thawed from a
+		// previously saved state. Note that we are not currently remembering
+		// the contents of the bitmap.
+		mFading = savedInstanceState != null ? savedInstanceState.getBoolean(
+				"fading", true) : true;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, CLEAR_ID, 0, "Clear");
+		menu.add(0, FADE_ID, 0, "Fade").setCheckable(true);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case CLEAR_ID:
+			mView.clear();
+			return true;
+		case FADE_ID:
+			mFading = !mFading;
+			if (mFading) {
+				startFading();
+			} else {
+				stopFading();
+			}
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// Make sure to never run the fading pulse while we are paused or
+		// stopped.
+		stopFading();
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(FADE_ID).setChecked(mFading);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// If fading mode is enabled, then as long as we are resumed we want
+		// to run pulse to fade the contents.
+		if (mFading) {
+			startFading();
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		// Save away the fading state to restore if needed later. Note that
+		// we do not currently save the contents of the display.
+		outState.putBoolean("fading", mFading);
+	}
+
+	/**
+	 * Start up the pulse to fade the screen, clearing any existing pulse to
+	 * ensure that we don't have multiple pulses running at a time.
+	 */
+	void startFading() {
+		mHandler.removeMessages(FADE_MSG);
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_MSG),
+				FADE_DELAY);
+	}
+
+	/**
+	 * Stop the pulse to fade the screen.
+	 */
+	void stopFading() {
+		mHandler.removeMessages(FADE_MSG);
 	}
 }

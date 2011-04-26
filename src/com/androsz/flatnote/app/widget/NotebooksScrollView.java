@@ -1,10 +1,6 @@
 package com.androsz.flatnote.app.widget;
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import com.androsz.flatnote.R;
-import com.androsz.util.MathUtils;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -18,7 +14,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+
+import com.androsz.flatnote.R;
 
 public class NotebooksScrollView extends HorizontalScrollView {
 
@@ -33,27 +30,45 @@ public class NotebooksScrollView extends HorizontalScrollView {
 		super(context, as);
 	}
 
+	@Override
+	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+		super.onScrollChanged(l, t, oldl, oldt);
+		updateNotebookRotations();
+	}
+
+	public void refreshDimensions() {
+		post(new Runnable() {
+
+			@Override
+			public void run() {
+				final int scrollX = getScrollX();
+				fullScroll(FOCUS_RIGHT);
+				fullScroll(FOCUS_LEFT);
+				scrollTo(scrollX, 0);
+			}
+		});
+	}
+
 	public void setNotebooks(Fragment owner,
 			final ArrayList<NotebookButton> notebooks) {
 		final LinearLayout notebooksContainer = (LinearLayout) getChildAt(0);
 		notebooksContainer.removeAllViews();
 
-		
 		if (notebooks != null) {
 
-			for (NotebookButton notebook : notebooks) {
+			for (final NotebookButton notebook : notebooks) {
 				notebooksContainer.addView(notebook);
 				owner.registerForContextMenu(notebook);
 			}
 		}
-		
+
 		// add a dummy notebook that prompts the user to create a notebook
-		Context c = getContext();
+		final Context c = getContext();
 		notebooksContainer.addView(new NotebookButton(c, c
 				.getText(R.string.tap_to_create_a_new_notebook), Color.argb(
 				127, 127, 127, 127)));
 
-		Rect outRect = new Rect();
+		final Rect outRect = new Rect();
 		this.getWindowVisibleDisplayFrame(outRect);
 
 		final float center = outRect.centerX();
@@ -86,32 +101,13 @@ public class NotebooksScrollView extends HorizontalScrollView {
 		});
 	}
 
-	public void refreshDimensions() {
-		post(new Runnable() {
-
-			@Override
-			public void run() {
-				int scrollX = getScrollX();
-				fullScroll(FOCUS_RIGHT);
-				fullScroll(FOCUS_LEFT);
-				scrollTo(scrollX, 0);
-			}
-		});
-	}
-
-	@Override
-	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-		super.onScrollChanged(l, t, oldl, oldt);
-		updateNotebookRotations();
-	}
-
 	public void updateNotebookRotations() {
-		Rect outRect = new Rect();
+		final Rect outRect = new Rect();
 		this.getWindowVisibleDisplayFrame(outRect);
 		final LinearLayout notebooksContainer = (LinearLayout) getChildAt(0);
 
-		float center = outRect.centerX();
-		float height = outRect.height();
+		final float center = outRect.centerX();
+		final float height = outRect.height();
 
 		float centerX = notebooksContainer.getWidth();
 		if (centerX < center * 2) {
@@ -121,12 +117,12 @@ public class NotebooksScrollView extends HorizontalScrollView {
 		}
 
 		for (int i = 0; i < notebooksContainer.getChildCount(); i++) {
-			View notebook = notebooksContainer.getChildAt(i);
+			final View notebook = notebooksContainer.getChildAt(i);
 
-			float offsetFromCenter = notebook.getX() + notebook.getPivotX()
-					- centerX;
-			float absOffsetFromCenter = Math.abs(offsetFromCenter);
-			float distanceAsScale = Math.min(1, 1 - absOffsetFromCenter
+			final float offsetFromCenter = notebook.getX()
+					+ notebook.getPivotX() - centerX;
+			final float absOffsetFromCenter = Math.abs(offsetFromCenter);
+			final float distanceAsScale = Math.min(1, 1 - absOffsetFromCenter
 					/ SCALE_MUFF / center);
 
 			notebook.setScaleX(distanceAsScale);

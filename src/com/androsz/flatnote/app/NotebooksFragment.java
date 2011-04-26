@@ -7,17 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
@@ -29,28 +27,23 @@ import com.androsz.flatnote.db.NotebooksDB;
 
 public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		setHasOptionsMenu(true);
-		loadNotebooks();
-	}
+	NotebookButton contextMenuNotebook;
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		getActivity().unregisterReceiver(refreshNotebooksReceiver);
-		getActivity().unregisterReceiver(showNewNotebookDialog);
-	}
+	private final BroadcastReceiver refreshNotebooksReceiver = new BroadcastReceiver() {
 
-	@Override
-	public void onResume() {
-		super.onPause();
-		getActivity().registerReceiver(refreshNotebooksReceiver,
-				new IntentFilter(Intents.REFRESH_NOTEBOOKS));
-		getActivity().registerReceiver(showNewNotebookDialog,
-				new IntentFilter(Intents.SHOW_NEW_NOTEBOOK_DIALOG));
-	}
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			loadNotebooks();
+		}
+	};
+
+	private final BroadcastReceiver showNewNotebookDialog = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			showNewNotebookDialog();
+		}
+	};
 
 	private NotebooksScrollView loadNotebooks() {
 		final Activity activity = this.getActivity();
@@ -64,26 +57,26 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 		return container;
 	}
 
-	NotebookButton contextMenuNotebook;
-	
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		contextMenuNotebook = (NotebookButton) v;
-		menu.add(Menu.NONE, 1, Menu.NONE,
-				R.string.open);
-		menu.add(Menu.NONE, 2, Menu.NONE,
-				R.string.delete);
-		menu.add(Menu.NONE, 3, Menu.NONE,
-				R.string.edit_name_and_color);
+	public void onActivityCreated(final Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		setHasOptionsMenu(true);
+		loadNotebooks();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		final Activity activity = this.getActivity();
+		final NotebooksScrollView container = (NotebooksScrollView) activity
+				.findViewById(R.id.notebooks_scroll);
+		container.refreshDimensions();
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		
-		if(contextMenuNotebook != null)
-		{
+
+		if (contextMenuNotebook != null) {
 			switch (item.getItemId()) {
 			case 1:
 				contextMenuNotebook.open();
@@ -94,7 +87,7 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 				contextMenuNotebook = null;
 				return true;
 			case 3:
-				contextMenuNotebook.edit();
+				// contextMenuNotebook.edit();
 				contextMenuNotebook = null;
 				return true;
 			}
@@ -103,13 +96,31 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 	}
 
 	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		contextMenuNotebook = (NotebookButton) v;
+		menu.add(Menu.NONE, 1, Menu.NONE, R.string.open);
+		menu.add(Menu.NONE, 2, Menu.NONE, R.string.delete);
+		menu.add(Menu.NONE, 3, Menu.NONE, R.string.edit_name_and_color);
+	}
+
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.notebooks_menu, menu);
-		SearchView sv = new SearchView(getActivity());
+		final SearchView sv = new SearchView(getActivity());
 		sv.setOnQueryTextListener(this);
 		menu.findItem(R.id.search_notebooks).setActionView(sv);
 
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.fragment_notebooks,
+				container);
+		return view;
 	}
 
 	@Override
@@ -123,41 +134,11 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 		}
 	}
 
-	private void showNewNotebookDialog() {
-		NewNotebookDialog newNotebookDialog = new NewNotebookDialog();
-		newNotebookDialog.show(getFragmentManager(), "newNotebookDialog");
-	}
-
-	private final BroadcastReceiver refreshNotebooksReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			NotebooksScrollView container = loadNotebooks();
-			container.refreshDimensions();
-		}
-	};
-
-	private final BroadcastReceiver showNewNotebookDialog = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			showNewNotebookDialog();
-		}
-	};
-
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		final Activity activity = this.getActivity();
-		final NotebooksScrollView container = (NotebooksScrollView) activity
-				.findViewById(R.id.notebooks_scroll);
-		container.refreshDimensions();
-	}
-
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_notebooks, container);
-		return view;
+	public void onPause() {
+		super.onPause();
+		getActivity().unregisterReceiver(refreshNotebooksReceiver);
+		getActivity().unregisterReceiver(showNewNotebookDialog);
 	}
 
 	@Override
@@ -170,5 +151,20 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 	public boolean onQueryTextSubmit(String query) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void onResume() {
+		super.onPause();
+		getActivity().registerReceiver(refreshNotebooksReceiver,
+				new IntentFilter(Intents.REFRESH_NOTEBOOKS));
+		getActivity().registerReceiver(showNewNotebookDialog,
+				new IntentFilter(Intents.SHOW_NEW_NOTEBOOK_DIALOG));
+	}
+
+	private void showNewNotebookDialog() {
+		final NewNotebookDialog newNotebookDialog = new NewNotebookDialog();
+		newNotebookDialog.setArguments(null);
+		newNotebookDialog.show(getFragmentManager(), "newNotebookDialog");
 	}
 }

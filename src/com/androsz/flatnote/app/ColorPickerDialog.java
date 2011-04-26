@@ -10,8 +10,8 @@ import com.androsz.flatnote.app.widget.ColorPickerView.OnColorChangedListener;
 
 public class ColorPickerDialog extends Dialog {
 
-	private OnColorChangedListener mListener;
-	private int mInitialColor;
+	private final OnColorChangedListener mListener;
+	private final int mInitialColor;
 
 	public ColorPickerDialog(Context context, OnColorChangedListener listener,
 			int initialColor) {
@@ -24,7 +24,8 @@ public class ColorPickerDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		OnColorChangedListener l = new OnColorChangedListener() {
+		final OnColorChangedListener l = new OnColorChangedListener() {
+			@Override
 			public void onColorChanged(int color) {
 				mListener.onColorChanged(color);
 				dismiss();

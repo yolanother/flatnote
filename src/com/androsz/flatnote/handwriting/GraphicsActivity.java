@@ -16,12 +16,11 @@
 
 package com.androsz.flatnote.handwriting;
 
-
-import com.androsz.flatnote.app.HostActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.androsz.flatnote.app.HostActivity;
 
 class GraphicsActivity extends HostActivity {
 	// set to true to test Picture

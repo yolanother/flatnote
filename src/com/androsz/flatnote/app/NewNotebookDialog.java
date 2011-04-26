@@ -21,28 +21,30 @@ public class NewNotebookDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Activity activity = getActivity();
+		final Activity activity = getActivity();
 
 		final View contentView = View.inflate(activity,
 				R.layout.dialog_new_notebook, null);
 
-		Dialog d = new AlertDialog.Builder(activity)
+		final Dialog d = new AlertDialog.Builder(activity)
 				.setView(contentView)
 				.setTitle(R.string.new_notebook)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								onPositiveClick(contentView);
 							}
 						})
 				.setNegativeButton(android.R.string.cancel,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								dismiss();
 							}
 						}).create();
 
-		ColorPickerView colorPicker = (ColorPickerView) contentView
+		final ColorPickerView colorPicker = (ColorPickerView) contentView
 				.findViewById(R.id.notebook_color);
 
 		colorPicker.setOnColorChangedListener(new OnColorChangedListener() {
@@ -54,37 +56,28 @@ public class NewNotebookDialog extends DialogFragment {
 
 		return d;
 	}
-	
-	@Override public void onCancel(DialogInterface dialog)
-	{
-		super.onCancel(dialog);
-		Activity activity = getActivity();
-		final View contentView = View.inflate(activity,
-				R.layout.dialog_new_notebook, null);
-		onPositiveClick(contentView);
-	}
-	
-	@Override public void onDismiss(DialogInterface dialog)
-	{
+
+	@Override
+	public void onDismiss(DialogInterface dialog) {
 		super.onDismiss(dialog);
 	}
 
 	private void onPositiveClick(View contentView) {
-		Activity activity = getActivity();
-		ColorPickerView colorPicker = (ColorPickerView) contentView
+		final Activity activity = getActivity();
+		final ColorPickerView colorPicker = (ColorPickerView) contentView
 				.findViewById(R.id.notebook_color);
 
-		EditText editName = (EditText) contentView
+		final EditText editName = (EditText) contentView
 				.findViewById(R.id.notebook_name);
 
-		int color = colorPicker.getColor();
-		String name = editName.getText().toString();
+		final int color = colorPicker.getColor();
+		final String name = editName.getText().toString();
 
 		new NotebooksDB(activity).createNotebook(name, color);
 		activity.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
 
-		Intent i = new Intent(activity, NotebookActivity.class);
-		CharSequence notebookName = name;
+		final Intent i = new Intent(activity, NotebookActivity.class);
+		final CharSequence notebookName = name;
 		i.putExtra(Extras.NOTEBOOK_NAME, notebookName);
 		activity.startActivity(i);
 

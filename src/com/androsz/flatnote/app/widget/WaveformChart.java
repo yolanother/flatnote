@@ -17,8 +17,6 @@ import com.androsz.achartengine.model.XYMultipleSeriesDataset;
 import com.androsz.achartengine.model.XYSeries;
 import com.androsz.achartengine.renderer.XYMultipleSeriesRenderer;
 import com.androsz.achartengine.renderer.XYSeriesRenderer;
-import com.androsz.flatnote.R;
-
 
 public class WaveformChart extends ChartView implements Serializable {
 
@@ -154,8 +152,7 @@ public class WaveformChart extends ChartView implements Serializable {
 			xyMultipleSeriesRenderer.setXAxisMax(lastX);
 
 			xyMultipleSeriesRenderer.setYAxisMin(-100);
-			xyMultipleSeriesRenderer
-					.setYAxisMax(100);
+			xyMultipleSeriesRenderer.setYAxisMax(100);
 		}
 	}
 
@@ -165,7 +162,7 @@ public class WaveformChart extends ChartView implements Serializable {
 
 	public void sync(final Cursor cursor) throws StreamCorruptedException,
 			IllegalArgumentException, IOException, ClassNotFoundException {
-		//sync(new SleepRecord(cursor));
+		// sync(new SleepRecord(cursor));
 	}
 
 	public void sync(final Double x, final Double y, final double alarm) {
@@ -179,14 +176,13 @@ public class WaveformChart extends ChartView implements Serializable {
 		repaint();
 	}
 
-	/*public void sync(final SleepRecord sleepRecord) {
-		xySeriesMovement.xyList = sleepRecord.chartData;
-		calibrationLevel = sleepRecord.alarm;
-
-		rating = sleepRecord.rating;
-
-		xyMultipleSeriesRenderer.setChartTitle(sleepRecord.title);
-		reconfigure();
-		repaint();
-	}*/
+	/*
+	 * public void sync(final SleepRecord sleepRecord) { xySeriesMovement.xyList
+	 * = sleepRecord.chartData; calibrationLevel = sleepRecord.alarm;
+	 * 
+	 * rating = sleepRecord.rating;
+	 * 
+	 * xyMultipleSeriesRenderer.setChartTitle(sleepRecord.title); reconfigure();
+	 * repaint(); }
+	 */
 }

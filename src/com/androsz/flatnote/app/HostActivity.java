@@ -10,31 +10,14 @@ import com.androsz.flatnote.R;
 
 public class HostActivity extends AnalyticActivity {
 
+	boolean alreadyPrepared = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// this.setTheme(R.style.Theme_flatnote);
 
 	}
-
-	boolean alreadyPrepared = false;
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (!alreadyPrepared) {
-			final MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.host_menu, menu);
-			alreadyPrepared = true;
-		}
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	/*
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) { final
-	 * MenuInflater inflater = getMenuInflater();
-	 * inflater.inflate(R.menu.host_menu, menu); return
-	 * super.onCreateOptionsMenu(menu); }
-	 */
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -45,6 +28,23 @@ public class HostActivity extends AnalyticActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	/*
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) { final
+	 * MenuInflater inflater = getMenuInflater();
+	 * inflater.inflate(R.menu.host_menu, menu); return
+	 * super.onCreateOptionsMenu(menu); }
+	 */
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!alreadyPrepared) {
+			final MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.host_menu, menu);
+			alreadyPrepared = true;
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override

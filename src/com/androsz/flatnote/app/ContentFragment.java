@@ -18,121 +18,117 @@ package com.androsz.flatnote.app;
 
 import java.util.StringTokenizer;
 
-import com.androsz.flatnote.R;
-
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.ClipData.Item;
+import android.content.ClipDescription;
 import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.androsz.flatnote.R;
 
 public class ContentFragment extends Fragment {
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.content_welcome, null);
-        final ImageView imageView = (ImageView) view.findViewById(R.id.image);
-        view.setDrawingCacheEnabled(false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		final View view = inflater.inflate(R.layout.content_welcome, null);
+		final ImageView imageView = (ImageView) view.findViewById(R.id.image);
+		view.setDrawingCacheEnabled(false);
 
-        view.setOnDragListener(new View.OnDragListener() {
-            public boolean onDrag(View v, DragEvent event) {
-                switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    return processDragStarted(event);
-                case DragEvent.ACTION_DROP:
-                    return processDrop(event, imageView);
-                }
-                return false;
-            }
-        });
+		view.setOnDragListener(new View.OnDragListener() {
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				switch (event.getAction()) {
+				case DragEvent.ACTION_DRAG_STARTED:
+					return processDragStarted(event);
+				case DragEvent.ACTION_DROP:
+					return processDrop(event, imageView);
+				}
+				return false;
+			}
+		});
 
-        view.setOnClickListener(new OnClickListener() {
+		view.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                ActionBar bar = ContentFragment.this.getActivity()
-                        .getActionBar();
-                if (bar != null) {
-                    if (bar.isShowing()) {
-                        bar.hide();
-                    } else {
-                        bar.show();
-                    }
-                }
-            }
-        });
-        return view;
-    }
+			@Override
+			public void onClick(View v) {
+				final ActionBar bar = ContentFragment.this.getActivity()
+						.getActionBar();
+				if (bar != null) {
+					if (bar.isShowing()) {
+						bar.hide();
+					} else {
+						bar.show();
+					}
+				}
+			}
+		});
+		return view;
+	}
 
-   boolean processDragStarted(DragEvent event) {
-        // Determine whether to continue processing drag and drop based on the
-        // plain text mime type.
-        ClipDescription clipDesc = event.getClipDescription();
-        if (clipDesc != null) {
-            return clipDesc.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
-        }
-        return false;
-    }
+	boolean processDragStarted(DragEvent event) {
+		// Determine whether to continue processing drag and drop based on the
+		// plain text mime type.
+		final ClipDescription clipDesc = event.getClipDescription();
+		if (clipDesc != null)
+			return clipDesc.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
+		return false;
+	}
 
-   boolean processDrop(DragEvent event, ImageView imageView) {
-        // Attempt to parse clip data with expected format: category||entry_id.
-        // Ignore event if data does not conform to this format.
-        ClipData data = event.getClipData();
-        if (data != null) {
-            if (data.getItemCount() > 0) {
-                Item item = data.getItemAt(0);
-                String textData = (String) item.getText();
-                if (textData != null) {
-                    StringTokenizer tokenizer = new StringTokenizer(textData, "||");
-                    if (tokenizer.countTokens() != 2) {
-                        return false;
-                    }
-                    int category = -1;
-                    int entryId = -1;
-                    try {
-                        category = Integer.parseInt(tokenizer.nextToken());
-                        entryId = Integer.parseInt(tokenizer.nextToken());
-                    } catch (NumberFormatException exception) {
-                        return false;
-                    }
-                    int drawableId = 0;
-        			switch (entryId) {
-        			case 0:
-        				drawableId = R.drawable.red_balloon;
-        				break;
+	boolean processDrop(DragEvent event, ImageView imageView) {
+		// Attempt to parse clip data with expected format: category||entry_id.
+		// Ignore event if data does not conform to this format.
+		final ClipData data = event.getClipData();
+		if (data != null) {
+			if (data.getItemCount() > 0) {
+				final Item item = data.getItemAt(0);
+				final String textData = (String) item.getText();
+				if (textData != null) {
+					final StringTokenizer tokenizer = new StringTokenizer(
+							textData, "||");
+					if (tokenizer.countTokens() != 2)
+						return false;
+					int entryId = -1;
+					try {
+						Integer.parseInt(tokenizer.nextToken());
+						entryId = Integer.parseInt(tokenizer.nextToken());
+					} catch (final NumberFormatException exception) {
+						return false;
+					}
+					int drawableId = 0;
+					switch (entryId) {
+					case 0:
+						drawableId = R.drawable.red_balloon;
+						break;
 
-        			case 1:
-        				drawableId = R.drawable.green_balloon;
-        				break;
+					case 1:
+						drawableId = R.drawable.green_balloon;
+						break;
 
-        			case 2:
-        				drawableId = R.drawable.blue_balloon;
-        				break;
+					case 2:
+						drawableId = R.drawable.blue_balloon;
+						break;
 
-        			}
-        			imageView.setImageDrawable(getResources().getDrawable(drawableId));
-                    
-                    //imageView.setImageBitmap(
-                     //   Directory.getCategory(category)
-                     //            .getEntry(entryId)
-                     //            .getBitmap(getResources()));
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+					}
+					imageView.setImageDrawable(getResources().getDrawable(
+							drawableId));
+
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
