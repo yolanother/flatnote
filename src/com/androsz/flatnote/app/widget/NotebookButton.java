@@ -83,13 +83,11 @@ public class NotebookButton extends Button {
 	}
 
 	public void edit() {
-		final Context c = getContext();
-		final Intent i = new Intent(c, NotebookActivity.class);
 		final CharSequence notebookName = getText();
 		Intent intent = new Intent(Intents.SHOW_EDIT_NOTEBOOK_DIALOG);
 		intent.putExtra(Extras.NOTEBOOK_NAME, notebookName);
 		intent.putExtra(Extras.NOTEBOOK_COLOR, color);
-		c.sendBroadcast(intent);
+		getContext().sendBroadcast(intent);
 	}
 
 	@Override
@@ -107,10 +105,11 @@ public class NotebookButton extends Button {
 	public boolean onTouchEvent(MotionEvent event) {
 		final int action = event.getAction();
 
-		if (action == MotionEvent.ACTION_UP) {
-			refreshDrawable(R.drawable.notebook_normal);
+		if (action == MotionEvent.ACTION_UP
+				|| action == MotionEvent.ACTION_CANCEL) {
+			post(new refreshDrawableRunnable(R.drawable.notebook_normal));
 		} else {
-			refreshDrawable(R.drawable.notebook_pressed);
+			post(new refreshDrawableRunnable(R.drawable.notebook_pressed));
 		}
 
 		// set the lastTouchAction member.
@@ -128,6 +127,19 @@ public class NotebookButton extends Button {
 		} else {
 			i.putExtra(Extras.NOTEBOOK_NAME, notebookName);
 			c.startActivity(i);
+		}
+	}
+
+	private final class refreshDrawableRunnable implements Runnable {
+		final int drawableId;
+
+		refreshDrawableRunnable(int drawableId) {
+			this.drawableId = drawableId;
+		}
+
+		@Override
+		public void run() {
+			refreshDrawable(drawableId);
 		}
 	}
 
