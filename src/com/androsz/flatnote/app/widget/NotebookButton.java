@@ -82,8 +82,14 @@ public class NotebookButton extends Button {
 		c.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
 	}
 
-	public void edit(String name, int color) {
-		// TODO: implement
+	public void edit() {
+		final Context c = getContext();
+		final Intent i = new Intent(c, NotebookActivity.class);
+		final CharSequence notebookName = getText();
+		Intent intent = new Intent(Intents.SHOW_EDIT_NOTEBOOK_DIALOG);
+		intent.putExtra(Extras.NOTEBOOK_NAME, notebookName);
+		intent.putExtra(Extras.NOTEBOOK_COLOR, color);
+		c.sendBroadcast(intent);
 	}
 
 	@Override

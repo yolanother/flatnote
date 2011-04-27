@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
+import com.androsz.flatnote.Extras;
 import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
 import com.androsz.flatnote.app.widget.NotebookButton;
@@ -33,15 +35,25 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			loadNotebooks();
+			NotebooksScrollView container = loadNotebooks();
+			container.refreshDimensions();
 		}
 	};
 
-	private final BroadcastReceiver showNewNotebookDialog = new BroadcastReceiver() {
+	private final BroadcastReceiver showNewNotebookDialogReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			showNewNotebookDialog();
+		}
+	};
+
+	private final BroadcastReceiver showEditNotebookDialogReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			showEditNotebookDialog(intent.getStringExtra(Extras.NOTEBOOK_NAME),
+					intent.getIntExtra(Extras.NOTEBOOK_COLOR, Color.CYAN));
 		}
 	};
 
@@ -87,7 +99,7 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 				contextMenuNotebook = null;
 				return true;
 			case 3:
-				// contextMenuNotebook.edit();
+				contextMenuNotebook.edit();
 				contextMenuNotebook = null;
 				return true;
 			}
@@ -137,8 +149,10 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 	@Override
 	public void onPause() {
 		super.onPause();
-		getActivity().unregisterReceiver(refreshNotebooksReceiver);
-		getActivity().unregisterReceiver(showNewNotebookDialog);
+		Activity a = getActivity();
+		a.unregisterReceiver(refreshNotebooksReceiver);
+		a.unregisterReceiver(showNewNotebookDialogReceiver);
+		a.unregisterReceiver(showEditNotebookDialogReceiver);
 	}
 
 	@Override
@@ -155,16 +169,24 @@ public class NotebooksFragment extends Fragment implements OnQueryTextListener {
 
 	@Override
 	public void onResume() {
-		super.onPause();
-		getActivity().registerReceiver(refreshNotebooksReceiver,
-				new IntentFilter(Intents.REFRESH_NOTEBOOKS));
-		getActivity().registerReceiver(showNewNotebookDialog,
-				new IntentFilter(Intents.SHOW_NEW_NOTEBOOK_DIALOG));
+		super.onResume();
+		Activity a = getActivity();
+		a.registerReceiver(refreshNotebooksReceiver, new IntentFilter(
+				Intents.REFRESH_NOTEBOOKS));
+		a.registerReceiver(showNewNotebookDialogReceiver, new IntentFilter(
+				Intents.SHOW_NEW_NOTEBOOK_DIALOG));
+		a.registerReceiver(showEditNotebookDialogReceiver, new IntentFilter(
+				Intents.SHOW_EDIT_NOTEBOOK_DIALOG));
 	}
 
 	private void showNewNotebookDialog() {
 		final NewNotebookDialog newNotebookDialog = new NewNotebookDialog();
-		newNotebookDialog.setArguments(null);
 		newNotebookDialog.show(getFragmentManager(), "newNotebookDialog");
+	}
+
+	private void showEditNotebookDialog(String oldName, int oldColor) {
+		final EditNotebookDialog editNotebookDialog = new EditNotebookDialog(
+				oldName, oldColor);
+		editNotebookDialog.show(getFragmentManager(), "editNotebookDialog");
 	}
 }

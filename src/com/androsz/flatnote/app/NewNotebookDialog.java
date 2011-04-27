@@ -19,11 +19,13 @@ import com.androsz.flatnote.db.NotebooksDB;
 
 public class NewNotebookDialog extends DialogFragment {
 
+	protected View contentView;
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		final Activity activity = getActivity();
 
-		final View contentView = View.inflate(activity,
+		contentView = View.inflate(activity,
 				R.layout.dialog_new_notebook, null);
 
 		final Dialog d = new AlertDialog.Builder(activity)
@@ -33,7 +35,7 @@ public class NewNotebookDialog extends DialogFragment {
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								onPositiveClick(contentView);
+								onPositiveClick();
 							}
 						})
 				.setNegativeButton(android.R.string.cancel,
@@ -50,19 +52,14 @@ public class NewNotebookDialog extends DialogFragment {
 		colorPicker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				onPositiveClick(contentView);
+				onPositiveClick();
 			}
 		});
 
 		return d;
 	}
 
-	@Override
-	public void onDismiss(DialogInterface dialog) {
-		super.onDismiss(dialog);
-	}
-
-	private void onPositiveClick(View contentView) {
+	protected void onPositiveClick() {
 		final Activity activity = getActivity();
 		final ColorPickerView colorPicker = (ColorPickerView) contentView
 				.findViewById(R.id.notebook_color);
