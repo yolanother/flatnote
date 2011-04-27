@@ -29,8 +29,6 @@ public class NotebookButton extends Button {
 
 	private final int color;
 
-	int lastTouchAction = MotionEvent.ACTION_UP;
-
 	int lastDrawableId;
 
 	public NotebookButton(Context context, CharSequence title, int color) {
@@ -111,9 +109,6 @@ public class NotebookButton extends Button {
 		} else {
 			post(new refreshDrawableRunnable(R.drawable.notebook_pressed));
 		}
-
-		// set the lastTouchAction member.
-		lastTouchAction = action;
 
 		return super.onTouchEvent(event);
 	}
