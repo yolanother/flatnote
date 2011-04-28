@@ -22,7 +22,7 @@ import com.androsz.flatnote.Extras;
 import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
 import com.androsz.flatnote.app.NotebookActivity;
-import com.androsz.flatnote.db.NotebooksDB;
+import com.androsz.flatnote.db.Notebooks;
 import com.androsz.util.MathUtils;
 
 public class NotebookButton extends Button {
@@ -74,10 +74,7 @@ public class NotebookButton extends Button {
 	}
 
 	public void delete() {
-		final Context c = getContext();
-		final NotebooksDB db = new NotebooksDB(c);
-		db.deleteNotebook(getText());
-		c.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
+		Notebooks.deleteNotebook(getContext(), getText());
 	}
 
 	public void edit() {

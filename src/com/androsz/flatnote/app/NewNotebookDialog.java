@@ -15,7 +15,7 @@ import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
 import com.androsz.flatnote.app.widget.ColorPickerView;
 import com.androsz.flatnote.app.widget.ColorPickerView.OnColorChangedListener;
-import com.androsz.flatnote.db.NotebooksDB;
+import com.androsz.flatnote.db.Notebooks;
 
 public class NewNotebookDialog extends DialogFragment {
 
@@ -70,8 +70,7 @@ public class NewNotebookDialog extends DialogFragment {
 		final int color = colorPicker.getColor();
 		final String name = editName.getText().toString();
 
-		new NotebooksDB(activity).createNotebook(name, color);
-		activity.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
+		Notebooks.createNotebook(activity, name, color);
 
 		final Intent i = new Intent(activity, NotebookActivity.class);
 		final CharSequence notebookName = name;

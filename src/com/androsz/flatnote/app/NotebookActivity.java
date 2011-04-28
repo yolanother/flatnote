@@ -16,7 +16,7 @@ public class NotebookActivity extends HostActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.activity_notebook);
 
 		final ActionBar bar = getActionBar();
 		bar.setDisplayHomeAsUpEnabled(true);

@@ -9,7 +9,7 @@ import android.widget.EditText;
 import com.androsz.flatnote.Intents;
 import com.androsz.flatnote.R;
 import com.androsz.flatnote.app.widget.ColorPickerView;
-import com.androsz.flatnote.db.NotebooksDB;
+import com.androsz.flatnote.db.Notebooks;
 
 public class EditNotebookDialog extends NewNotebookDialog {
 	protected String oldName;
@@ -23,6 +23,7 @@ public class EditNotebookDialog extends NewNotebookDialog {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		Dialog d = super.onCreateDialog(savedInstanceState);
 		// set the old color and name
 		((ColorPickerView) contentView.findViewById(R.id.notebook_color))
 				.setColor(oldColor);
@@ -31,7 +32,7 @@ public class EditNotebookDialog extends NewNotebookDialog {
 		name.setText(oldName);
 		name.selectAll();
 
-		return  super.onCreateDialog(savedInstanceState);
+		return d;
 	}
 
 	@Override
@@ -46,10 +47,7 @@ public class EditNotebookDialog extends NewNotebookDialog {
 		final int color = colorPicker.getColor();
 		final String name = editName.getText().toString();
 
-		int num = new NotebooksDB(activity)
-				.updateNotebook(oldName, name, color);
-		if (num > 0)
-			activity.sendBroadcast(new Intent(Intents.REFRESH_NOTEBOOKS));
+		Notebooks.updateNotebook(activity, oldName, name, color);
 
 		dismiss();
 	}
